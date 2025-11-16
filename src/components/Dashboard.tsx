@@ -1,6 +1,8 @@
 // src/components/Dashboard.tsx
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 
 const Dashboard = () => {
   const [coins, setCoins] = useState<any[]>([]);
@@ -29,8 +31,10 @@ const Dashboard = () => {
         <ul className="coin-list">
           {coins.map((coin) => (
             <li key={coin.id} className="coin-item">
-              {/* This item will eventually be clickable to navigate */}
+              {/* Use the Link component to navigate */}
+              <Link to={`/coin/${coin.id}`}>
               <strong>{coin.name} ({coin.symbol.toUpperCase()})</strong> - R {coin.current_price.toLocaleString('en-ZA')}
+                </Link>
             </li>
           ))}
         </ul>
