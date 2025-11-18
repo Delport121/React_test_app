@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const CoinDetails = () => {
-  const { id } = useParams<{ id: string }>(); 
-  // State is initialized as an empty object
+  const { id } = useParams<{ id: string }>(); // Get the coin ID from the URL params
+
+  // 1. Define State to hold the single coin object
   const [coin, setCoin] = useState<any>({}); 
 
+  // 2. Fetch the data using the ID
   useEffect(() => {
     if (!id) return; 
 
@@ -24,14 +26,15 @@ const CoinDetails = () => {
     };
 
     fetchCoinDetails();
-  }, [id]); 
+  }, [id]); // This effect runs whenever the 'id' changes
 
-  // Display a loading message until we have the name property
+  // 3. Render the coin details
+  // // Display a loading message until we have the name property
   if (!coin || !coin.name) {
       return <h1>Loading {id} details...</h1>;
   }
   
-  // Display some of the required details
+  // // Display some of the required details
   return (
     <div className="coin-details">
       <h1>{coin.name} ({coin.symbol.toUpperCase()})</h1>

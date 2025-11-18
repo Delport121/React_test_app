@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard'; 
 import CoinDetails from './components/CoinDetails'; 
 
+
 function App() {
   return (
     <BrowserRouter>
