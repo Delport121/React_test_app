@@ -25,6 +25,9 @@
 }
 
 .coin-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   padding: 12px 16px;
   background: #ffffff;
   border-radius: 8px;
@@ -39,11 +42,36 @@
   box-shadow: 0px 6px 18px rgba(0,0,0,0.10);
 }
 
+.coin-rank-large {
+  font-size: 36px;
+  font-weight: 700;
+  color: #888;
+  min-width: 60px;
+  text-align: center;
+}
+
+.coin-content {
+  flex: 1;
+}
+
 .coin-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: 600;
   margin-bottom: 8px;
+}
+
+.coin-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coin-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
 }
 
 .coin-symbol {

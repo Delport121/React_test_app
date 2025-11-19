@@ -40,22 +40,25 @@ return (
               key={coin.id} 
               className="coin-card"
             >
-              <div className="coin-header">
-                <div>
-                  <span className="coin-rank">#{index + 1}</span>
-                  <span className="coin-name">{coin.name}</span>
+              <div className="coin-rank-large">#{index + 1}</div>
+              <div className="coin-content">
+                <div className="coin-header">
+                  <div className="coin-header-left">
+                    <img src={coin.image} alt={coin.name} className="coin-image" />
+                    <span className="coin-name">{coin.name}</span>
+                  </div>
+                  <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
                 </div>
-                <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
-              </div>
 
-              <div className="coin-price">
-                <div>
-                  <div className="price-label">Price</div>
-                  <span>R {coin.current_price.toLocaleString("en-ZA")}</span>
-                </div>
-                <div>
-                  <div className="price-label">Market Cap</div>
-                  <span className="coin-market-cap">R {coin.market_cap.toLocaleString("en-ZA")}</span>
+                <div className="coin-price">
+                  <div>
+                    <div className="price-label">Price</div>
+                    <span>R {coin.current_price.toLocaleString("en-ZA")}</span>
+                  </div>
+                  <div>
+                    <div className="price-label">Market Cap</div>
+                    <span className="coin-market-cap">R {coin.market_cap.toLocaleString("en-ZA")}</span>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -64,25 +67,6 @@ return (
       )}
     </div>
   );
-  //   return (
-  //   <div className="dashboard">
-  //     <h2>Top 10 Cryptocurrencies (ZAR)</h2>
-  //     {coins.length === 0 ? (
-  //         <p>Loading market data...</p> 
-  //     ) : (
-  //       <ul className="coin-list">
-  //         {coins.map((coin) => (
-  //           <li key={coin.id} className="coin-item">
-  //             {/* Use the Link component to navigate */}
-  //             <Link to={`/coin/${coin.id}`}>
-  //             <strong>{coin.name} ({coin.symbol.toUpperCase()})</strong> - R {coin.current_price.toLocaleString('en-ZA')}
-  //               </Link>
-  //           </li>
-  //         ))}
-  //       </ul>
-  //     )}
-  //   </div>
-  // );
 };
 
 export default Dashboard;
