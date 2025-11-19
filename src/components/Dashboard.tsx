@@ -34,19 +34,29 @@ return (
         <div className="loading">Loading market data...</div>
       ) : (
         <div className="coin-grid">
-          {coins.map((coin) => (
+          {coins.map((coin, index) => (
             <Link 
               to={`/coin/${coin.id}`} 
               key={coin.id} 
               className="coin-card"
             >
               <div className="coin-header">
-                <span className="coin-name">{coin.name}</span>
+                <div>
+                  <span className="coin-rank">#{index + 1}</span>
+                  <span className="coin-name">{coin.name}</span>
+                </div>
                 <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
               </div>
 
               <div className="coin-price">
-                R {coin.current_price.toLocaleString("en-ZA")}
+                <div>
+                  <div className="price-label">Price</div>
+                  <span>R {coin.current_price.toLocaleString("en-ZA")}</span>
+                </div>
+                <div>
+                  <div className="price-label">Market Cap</div>
+                  <span className="coin-market-cap">R {coin.market_cap.toLocaleString("en-ZA")}</span>
+                </div>
               </div>
             </Link>
           ))}
