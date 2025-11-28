@@ -3,10 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useCurrency } from '../context/CurrencyContext';
+import CurrencySelector from './CurrencySelector';
 import './CoinDetails.css';
+
+// Currency symbol mapping
+const getCurrencySymbol = (currency: string) => {
+  const symbols: { [key: string]: string } = {
+    zar: 'R',
+    usd: '$',
+    eur: '€',
+    btc: '₿',
+  };
+  return symbols[currency] || currency.toUpperCase();
+};
 
 const CoinDetails = () => {
   const { id } = useParams<{ id: string }>(); // Get the coin ID from the URL params
+  const { vsCurrency } = useCurrency(); // Get the selected currency from context
 
   // Define State to hold the single coin object and chart data
   const [coin, setCoin] = useState<any>({}); 
@@ -32,7 +46,7 @@ const CoinDetails = () => {
     // API 2: Fetch Chart Data
     const fetchChartData = async () => {
         const CHART_URL = 
-            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=zar&days=7`;
+            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${vsCurrency}&days=7`;
         
         try {
             const response = await fetch(CHART_URL);
@@ -50,17 +64,26 @@ const CoinDetails = () => {
     fetchCoinDetails(); // Fetch coin details
     fetchChartData();   // Fetch chart data
 
-  }, [id]); // This effect runs whenever the 'id' changes
+  }, [id, vsCurrency]); // This effect runs whenever the 'id' or 'vsCurrency' changes
 
   // 3. Render the coin details
   // // Display a loading message until we have the name property
   if (!coin || !coin.name) {
       return <h1>Loading {id} details...</h1>;
   }
+
+  const currencySymbol = getCurrencySymbol(vsCurrency);
+  const currencyData = coin.market_data.current_price[vsCurrency];
+  const marketCapData = coin.market_data.market_cap[vsCurrency];
+  const volumeData = coin.market_data.total_volume[vsCurrency];
+  const athData = coin.market_data.ath[vsCurrency];
+  const atlData = coin.market_data.atl[vsCurrency];
   
   // // Display some of the required details
   return (
     <div className="coin-details">
+      <CurrencySelector />
+
       <div className="coin-header-detail">
         {coin.image?.large && <img src={coin.image.large} alt={coin.name} className="coin-logo" />}
         <div>
@@ -71,7 +94,7 @@ const CoinDetails = () => {
 
       <div className="price-section">
         <h2>Current Price</h2>
-        <p className="current-price">R {coin.market_data.current_price.zar.toLocaleString('en-ZA')}</p>
+        <p className="current-price">{currencySymbol} {currencyData?.toLocaleString()}</p>
         <div className="price-change">
           <span className={coin.market_data.price_change_percentage_24h >= 0 ? 'positive' : 'negative'}>
             {coin.market_data.price_change_percentage_24h >= 0 ? '▲' : '▼'} 
@@ -85,35 +108,35 @@ const CoinDetails = () => {
         <div className="stats-grid">
           <div className="stat-item">
             <span className="stat-label">Market Cap</span>
-            <span className="stat-value">R {coin.market_data.market_cap.zar.toLocaleString('en-ZA')}</span>
+            <span className="stat-value">{currencySymbol} {marketCapData?.toLocaleString()}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">24h Volume</span>
-            <span className="stat-value">R {coin.market_data.total_volume.zar.toLocaleString('en-ZA')}</span>
+            <span className="stat-value">{currencySymbol} {volumeData?.toLocaleString()}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Circulating Supply</span>
-            <span className="stat-value">{coin.market_data.circulating_supply?.toLocaleString('en-ZA')} {coin.symbol.toUpperCase()}</span>
+            <span className="stat-value">{coin.market_data.circulating_supply?.toLocaleString()} {coin.symbol.toUpperCase()}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Total Supply</span>
             <span className="stat-value">
-              {coin.market_data.total_supply ? coin.market_data.total_supply.toLocaleString('en-ZA') : 'N/A'} {coin.symbol.toUpperCase()}
+              {coin.market_data.total_supply ? coin.market_data.total_supply.toLocaleString() : 'N/A'} {coin.symbol.toUpperCase()}
             </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">All-Time High</span>
-            <span className="stat-value">R {coin.market_data.ath.zar.toLocaleString('en-ZA')}</span>
+            <span className="stat-value">{currencySymbol} {athData?.toLocaleString()}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">All-Time Low</span>
-            <span className="stat-value">R {coin.market_data.atl.zar.toLocaleString('en-ZA')}</span>
+            <span className="stat-value">{currencySymbol} {atlData?.toLocaleString()}</span>
           </div>
         </div>
       </div>
 
       <div className="chart-section">
-        <h2>Price History (Last 7 Days)</h2>
+        <h2>Price History (Last 7 Days) - {vsCurrency.toUpperCase()}</h2>
 
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -129,11 +152,11 @@ const CoinDetails = () => {
                 domain={['auto', 'auto']} 
                 stroke="#666"
                 style={{ fontSize: '12px' }}
-                tickFormatter={(value) => `R ${value.toLocaleString('en-ZA', { notation: 'compact' })}`}
+                tickFormatter={(value) => `${currencySymbol} ${value.toLocaleString(undefined, { notation: 'compact' })}`}
               /> 
               {/* Tooltip shows data when hovering */}
               <Tooltip 
-                formatter={(value: number) => [`R ${value.toLocaleString('en-ZA')}`, 'Price']}
+                formatter={(value: number) => [`${currencySymbol} ${value.toLocaleString()}`, 'Price']}
                 contentStyle={{ 
                   background: '#fff', 
                   border: '1px solid #ccc',
