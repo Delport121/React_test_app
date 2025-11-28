@@ -30,8 +30,8 @@ npm --version
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Delport121/Octocco_react_test.git
-   cd octoco-crypto-app
+   git clone https://github.com/Delport121/React_test_app.git
+   cd crypto-app
    ```
 
 2. **Install dependencies**
@@ -51,7 +51,7 @@ npm --version
 ## Project Structure
 
 ```
-octoco-crypto-app/
+crypto-app/
 ├── public/
 │   ├── index.html
 │   ├── manifest.json
