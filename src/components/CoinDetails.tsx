@@ -46,14 +46,13 @@ const CoinDetails = () => {
     // API 2: Fetch Chart Data
     const fetchChartData = async () => {
         const CHART_URL = 
+            // This API returns an object with "prices", "market_caps", and "total_volumes" arrays.
             `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${vsCurrency}&days=7`;
         
         try {
             const response = await fetch(CHART_URL);
             const data = await response.json();
-            
-            // This API returns an object with "prices", "market_caps", and "total_volumes" arrays.
-            // setChartData(data.prices); 
+  
             setChartData(formatChartData(data.prices));
             
         } catch (error) {
@@ -61,8 +60,8 @@ const CoinDetails = () => {
         }
     };
 
-    fetchCoinDetails(); // Fetch coin details
-    fetchChartData();   // Fetch chart data
+    fetchCoinDetails(); 
+    fetchChartData();  
 
   }, [id, vsCurrency]); // This effect runs whenever the 'id' or 'vsCurrency' changes
 

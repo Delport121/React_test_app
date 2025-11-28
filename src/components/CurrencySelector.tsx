@@ -1,12 +1,12 @@
 import React from 'react';
-import { useCurrency } from '../context/CurrencyContext'; // Import the setter function
+import { useCurrency } from '../context/CurrencyContext';
 import './CurrencySelector.css';
 
 const currencies = [
   'zar',
   'usd',
   'eur',
-  'btc', // Bonus: Allowing selection of BTC as a base currency
+  'btc', 
 ];
 
 const CurrencySelector: React.FC = () => {
