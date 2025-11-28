@@ -1,4 +1,4 @@
-# Octoco Crypto App
+#Crypto App
 
 A React-based cryptocurrency dashboard that displays real-time market data from the CoinGecko API. View the top 10 cryptocurrencies, explore detailed coin information, and switch between multiple currencies.
 
