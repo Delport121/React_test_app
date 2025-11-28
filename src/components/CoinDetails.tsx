@@ -2,18 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import './CoinDetails.css';
 
 const CoinDetails = () => {
   const { id } = useParams<{ id: string }>(); // Get the coin ID from the URL params
 
-  // 1. Define State to hold the single coin object
+  // Define State to hold the single coin object and chart data
   const [coin, setCoin] = useState<any>({}); 
+  const [chartData, setChartData] = useState<any[]>([]);
 
-  // 2. Fetch the data using the ID
+  // Define the side effect to fetch coin details and chart data
   useEffect(() => {
     if (!id) return; 
 
+    // API 1: Fetch Coin Details
     const API_URL = `https://api.coingecko.com/api/v3/coins/${id}`;
     
     const fetchCoinDetails = async () => {
@@ -26,7 +29,27 @@ const CoinDetails = () => {
       }
     };
 
-    fetchCoinDetails();
+    // API 2: Fetch Chart Data
+    const fetchChartData = async () => {
+        const CHART_URL = 
+            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=zar&days=7`;
+        
+        try {
+            const response = await fetch(CHART_URL);
+            const data = await response.json();
+            
+            // This API returns an object with "prices", "market_caps", and "total_volumes" arrays.
+            // setChartData(data.prices); 
+            setChartData(formatChartData(data.prices));
+            
+        } catch (error) {
+            console.error("Error fetching chart data:", error);
+        }
+    };
+
+    fetchCoinDetails(); // Fetch coin details
+    fetchChartData();   // Fetch chart data
+
   }, [id]); // This effect runs whenever the 'id' changes
 
   // 3. Render the coin details
@@ -89,6 +112,50 @@ const CoinDetails = () => {
         </div>
       </div>
 
+      <div className="chart-section">
+        <h2>Price History (Last 7 Days)</h2>
+
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              {/* Draws the horizontal axis (Date) */}
+              <XAxis 
+                dataKey="date" 
+                stroke="#666"
+                style={{ fontSize: '12px' }}
+              /> 
+              {/* Draws the vertical axis (Price) */}
+              <YAxis 
+                domain={['auto', 'auto']} 
+                stroke="#666"
+                style={{ fontSize: '12px' }}
+                tickFormatter={(value) => `R ${value.toLocaleString('en-ZA', { notation: 'compact' })}`}
+              /> 
+              {/* Tooltip shows data when hovering */}
+              <Tooltip 
+                formatter={(value: number) => [`R ${value.toLocaleString('en-ZA')}`, 'Price']}
+                contentStyle={{ 
+                  background: '#fff', 
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '10px'
+                }}
+              />
+              {/* Draws the line graph */}
+              <Line 
+                type="monotone" 
+                dataKey="price" 
+                stroke="#0c7a24" 
+                strokeWidth={2}
+                dot={false} // Don't show individual dots
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <p>Loading chart data...</p>
+        )}
+      </div>
+
       {coin.description?.en && (
         <div className="description-section">
           <h2>About {coin.name}</h2>
@@ -121,6 +188,15 @@ const CoinDetails = () => {
       </div>
     </div>
   );
+};
+
+// Helper function to format the data for the chart
+const formatChartData = (data: any[]) => {
+  return data.map((item) => ({
+    // Convert timestamp (item[0]) to a readable date string
+    date: new Date(item[0]).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' }), 
+    price: item[1], // The price value
+  }));
 };
 
 export default CoinDetails;
