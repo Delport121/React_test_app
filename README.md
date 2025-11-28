@@ -31,7 +31,7 @@ npm --version
 1. **Clone the repository**
    ```bash
    git clone https://github.com/Delport121/React_test_app.git
-   cd crypto-app
+   cd React_test_app
    ```
 
 2. **Install dependencies**
